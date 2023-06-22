@@ -9,6 +9,8 @@ rode "docker composer up" ou se preferi o sail "./vendor/bin/sail up -d"
 
 3º antes de roda o projeto rode passport "sail art passport:install"
 
+
 4º configure no .env um e-mail e senha para primeiro usuario administrado(atualizar quando adicionar seed com outros usuarios)
+
 
 **Pronto parte inicial do projeto feita.**

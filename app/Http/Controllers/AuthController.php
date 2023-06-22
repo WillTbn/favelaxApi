@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Silber\Bouncer\BouncerFacade;
 
 class AuthController extends Controller
 {
@@ -75,6 +76,8 @@ class AuthController extends Controller
     {
         if(Auth::guard('api')->check()){
             $user = Auth::guard('api')->user();
+            return $user->getRoles();
+            return BouncerFacade::is($user)->a('modelador');
             return response()->json(['data' =>  $user], 200);
         }
         return response()->json(['message' =>  'unauthorized'], 401);
