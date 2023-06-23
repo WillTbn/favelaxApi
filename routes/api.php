@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,20 +20,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function(){
     Route::post('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    // Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
-Route::controller(AuthController::class)->group(function(){
-    Route::group(['prefix'=>'user'],
-        function($router){
-            Route::get('details', 'getUserDetail');
-            Route::post('logout', 'logout');
 
-        });
-})->middleware('auth:api');
 
-// Route::middleware('auth:api')->group(function () {
-//     Route::post('/logout', 'AuthController@logout');
-//     Route::get('/user', function (Request $request) {
-//         return $request->user();
-//     });
-// });
+
+Route::middleware('auth:api')->group(function(){
+    Route::group(['prefix' =>'user'], function($router){
+        Route::get('/', [UserController::class, 'getDetails']);
+        Route::get('/trashed', [UserController::class, 'trashed'])->name('UserTrashed');
+        Route::put('/restore/{user}', [UserController::class, 'restore'])->name('UserRestore');
+        Route::delete('/destroy/{user}', [UserController::class, 'destroy'])->name('UserDestroy');
+        Route::delete('/forcedelete/{user}', [UserController::class, 'deleteForce'])->name('UserDelete');
+    });
+
+    Route::group(['prefix'=>'admin'],function($router){
+        Route::post('/create', [AdminController::class, 'create'])->name('AdminCreate');
+        Route::get('/details', [AuthController::class, 'getUserDetail'])->name('AdminDetails');
+        Route::get('/readAll', [AdminController::class, 'index'])->name('AdminReadAll');
+        Route::get('/{user}', [AdminController::class, 'show'])->name('AdminShow');
+        Route::put('/{user}', [AdminController::class, 'update'])->name('AdminUpdate');
+
+    });
+})->middleware('can:controll-all');

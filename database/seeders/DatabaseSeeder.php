@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'name' =>'Admin User',
-                'email' => env('USER_ADMIN_EMAIL'),
-                'password' => bcrypt(env('USER_ADMIN_PASSWORD')),
+                'email' => env('USER_ADMIN_EMAIL', 'admin@gmail.com'),
+                'password' => bcrypt(env('USER_ADMIN_PASSWORD', '12345678')),
                 'email_verified_at' => now()
             ],
             [
@@ -54,19 +54,19 @@ class DatabaseSeeder extends Seeder
         }
         $admin = BouncerFacade::role()->firstOrCreate([
             'name' => 'admin',
-            'title' => 'Administrador'
+            'title' => 'administrator'
         ]);
         $mod = BouncerFacade::role()->firstOrCreate([
-            'name' => 'Mod',
-            'title' => 'Moderador'
+            'name' => 'mod',
+            'title' => 'Modeler'
         ]);
         $financNvlOne = BouncerFacade::role()->firstOrCreate([
-            'name' => 'FinancNvlOne',
-            'title' => 'Financeiro nvl One'
+            'name' => 'financNvlOne',
+            'title' => 'Financial nvl One'
         ]);
         $financNvlTwo = BouncerFacade::role()->firstOrCreate([
-            'name' => 'FinancNvlTwo',
-            'title' => 'Financeiro nvl Two'
+            'name' => 'financNvlTwo',
+            'title' => 'Financial nvl Two'
         ]);
 
         $control = BouncerFacade::ability()->firstOrCreate([

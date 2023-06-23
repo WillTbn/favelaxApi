@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Silber\Bouncer\BouncerFacade;
@@ -12,14 +11,14 @@ use Silber\Bouncer\BouncerFacade;
 class AuthController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api')->except(['login', 'register', 'unauthorized']);
-    // }
-    // public function unauthorized()
-    // {
-    //     return response()->json(['error' => 'Não autenticado'],401);
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['login', 'register', 'unauthorized']);
+    }
+    public function unauthorized()
+    {
+        return response()->json(['error' => 'Não autenticado'],401);
+    }
     public function register(Request $request)
     {
         $validatedData = $request->validate([
@@ -62,10 +61,10 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         if(Auth::guard('api')->check()){
-            $user = Auth::guard('api')->user();
+            $user = auth('api')->user();
             $user->token()->revoke();
 
             return response()->json(['message' => 'Logged out successfully'], 200);
@@ -75,9 +74,9 @@ class AuthController extends Controller
     public function getUserDetail()
     {
         if(Auth::guard('api')->check()){
-            $user = Auth::guard('api')->user();
+            $user = auth('api')->user();
             return $user->getRoles();
-            return BouncerFacade::is($user)->a('modelador');
+            return BouncerFacade::is($user)->an('modelador');
             return response()->json(['data' =>  $user], 200);
         }
         return response()->json(['message' =>  'unauthorized'], 401);
