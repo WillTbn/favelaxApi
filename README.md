@@ -1,9 +1,9 @@
 # Projeto Favelax API
 
-*Laravel10x
-*Autentificão Passport
-*ACL para controler de acesso, utilizado o Bouncer para esse controler
-*Token Bearer
+* Laravel10x
+* Autentificão Passport
+* ACL para controler de acesso, utilizado o Bouncer para esse controler
+* Token Bearer
 
 **A parte**
 *Data Tranfer Object(DTO)
