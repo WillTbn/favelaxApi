@@ -21,7 +21,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        // \Silber\Bouncer\BouncerServiceProvider::class,
     ];
 
     /**
@@ -66,10 +65,6 @@ class Kernel extends HttpKernel
         'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'admin' => \App\Http\Middleware\ScopeBouncerAdm::class,
-        'mod' => \App\Http\Middleware\ScopeBouncerMod::class,
-        'nvlone' => \App\Http\Middleware\ScopeBouncerFinancNvlOne::class,
-        'nvltwo' => \App\Http\Middleware\ScopeBouncerFinancNvlTwo::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class
     ];
 }

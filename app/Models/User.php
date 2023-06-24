@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-// use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 class User extends Authenticatable
 {
-    use HasRolesAndAbilities, HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     /**
@@ -35,10 +33,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    public function getTypeAttribute()
-    {
-        return $this->getRoles();
-    }
     /**
      * The attributes that should be cast.
      *
