@@ -1,13 +1,13 @@
 # Projeto Favelax API
 
->>>>>Laravel10x
->>>>Autentificão Passport
->>>ACL para controler de acesso, utilizado o Bouncer para esse controler
->>Token Bearer
+*Laravel10x
+*Autentificão Passport
+*ACL para controler de acesso, utilizado o Bouncer para esse controler
+*Token Bearer
 
 **A parte**
->>Data Tranfer Object(DTO)
->SoftDelete nos Users
+*Data Tranfer Object(DTO)
+*SoftDelete nos Users
 
 ## Referência
 
@@ -16,7 +16,7 @@
  - [DTO](https://dev.to/emrancu/data-transfer-object-dto-in-laravel-5apa)
  - [SoftDeletes](https://laravel.com/docs/10.x/eloquent#soft-deleting)
 
- _*em plena era Chat GPT logico que não foi só essas referencias mas tome*_
+ _*ChatGPT logico ajudou muito*_
 
 
 
