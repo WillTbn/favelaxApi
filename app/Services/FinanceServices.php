@@ -9,6 +9,24 @@ use Silber\Bouncer\BouncerFacade;
 
 class FinanceServices
 {
+    public function getOne(int $id)
+    {
+
+        $user =  User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin')->orWhere('name', 'mod');
+        })->where('id', $id)->first();
+
+
+        return $user;
+    }
+    public function getAll()
+    {
+        $users =  User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin')->orWhere('name', 'mod');
+        })->get();
+
+        return $users;
+    }
     public function createfinance(UserDTO $fin)
     {
 

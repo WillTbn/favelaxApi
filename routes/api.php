@@ -28,43 +28,46 @@ Route::group(['prefix' => 'auth'], function(){
 //Edited-registers -> Financeiro nvl 2
 
 Route::middleware(['auth:api','mod'])->group(function(){
-    Route::get('/users', [UserController::class, 'index'])->name('UserAll');
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
 });
 Route::middleware(['auth:api','nvlone'])->group(function(){
-    Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])->name('UserDestroy');
+    Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });
 Route::middleware(['auth:api','nvltwo'])->group(function(){
-    Route::put('/user/{user}', [UserController::class, 'update'])->name('UserUpdate');
+    Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });
 
 Route::middleware(['auth:api','admin'])->group(function(){
     Route::group(['prefix' =>'user'], function($router){
-        Route::get('/trashed', [UserController::class, 'trashed'])->name('UserTrashed');
-        Route::post('/', [UserController::class, 'create'])->name('UserCreate');
-        Route::put('/restore/{user}', [UserController::class, 'restore'])->name('UserRestore');
-        Route::delete('/user/forcedelete/{user}', [UserController::class, 'deleteForce'])->name('UserDelete');
+        Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashe');
+        Route::post('/', [UserController::class, 'create'])->name('user.create');
+        Route::put('/restore/{user}', [UserController::class, 'restore'])->name('user.restore');
+        Route::delete('/user/forcedelete/{user}', [UserController::class, 'deleteForce'])->name('user.delete');
     });
 
     Route::group(['prefix'=>'admin'],function($router){
-        Route::post('/create', [AdminController::class, 'create'])->name('AdminCreate');
-        Route::get('/details', [AuthController::class, 'getUserDetail'])->name('AdminDetails');
-        Route::get('/readAll', [AdminController::class, 'index'])->name('AdminReadAll');
-        Route::get('/{user}', [AdminController::class, 'show'])->name('AdminShow');
-        Route::put('/{user}', [AdminController::class, 'update'])->name('AdminUpdate');
+        Route::post('/create', [AdminController::class, 'create'])->name('admin.create');
+        Route::get('/details', [AuthController::class, 'getUserDetail'])->name('admin.details');
+        Route::get('/readAll', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/{user}', [AdminController::class, 'show'])->name('admin.show');
+        Route::put('/{user}', [AdminController::class, 'update'])->name('admin.update');
+        Route::delete('/{user}', [AdminController::class, 'destroy'])->name('admin.destroy');
 
     });
     Route::group(['prefix'=>'modelador'],function($router){
-        Route::post('/', [ModelatorController::class, 'create'])->name('ModeladorCreated');
-        Route::get('/{user}', [ModelatorController::class, 'show'])->name('ModeladorShow');
-        Route::put('/{user}', [AdminController::class, 'update'])->name('ModeladorUpdate');
+        Route::get('/', [ModelatorController::class, 'index'])->name('modelador.index');
+        Route::post('/', [ModelatorController::class, 'create'])->name('modelador.create');
+        Route::get('/{user}', [ModelatorController::class, 'show'])->name('modelador.show');
+        Route::put('/{user}', [ModelatorController::class, 'update'])->name('modelador.update');
+        Route::delete('/{user}', [ModelatorController::class, 'destroy'])->name('modelador.destroy');
     });
     Route::group(['prefix'=>'finance'],function($router){
         // Bouncer::Allow('')
-        Route::get('/', [FinanceController::class, 'index'])->name('FinanceAll');
-        Route::post('/', [FinanceController::class, 'create'])->name('FinanceCreated');
-        Route::get('/{user}', [FinanceController::class, 'show'])->name('FinanceShow');
-
-
+        Route::get('/', [FinanceController::class, 'index'])->name('finance.index');
+        Route::post('/', [FinanceController::class, 'create'])->name('finance.create');
+        Route::get('/{user}', [FinanceController::class, 'show'])->name('finance.show');
+        Route::put('/{user}', [FinanceController::class, 'update'])->name('finance.update');
+        Route::delete('/{user}', [FinanceController::class, 'destroy'])->name('finance.destroy');
     });
 });

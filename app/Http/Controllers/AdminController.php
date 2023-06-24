@@ -24,11 +24,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $list =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('name', 'control-all');
-            });
-        })->get();
+        $list = $this->adminSer->getAdmins();
 
         return response()->json(['status'=> '200', 'data' => $list], 200);
     }
@@ -78,6 +74,17 @@ class AdminController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
+    }
+    public function destroy(string $user)
+    {
+        $currentUser =  $user = $this->adminSer->getOne($user);
+        if($currentUser){
+
+            $getUser = $currentUser->delete($currentUser->id);
+
+            return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
+        }
+        return response()->json(['status'=> '400','message' =>  'Usuário não se encontra na lista de Admin!'], 400 );
     }
 
 }

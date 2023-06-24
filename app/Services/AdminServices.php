@@ -9,6 +9,28 @@ use Silber\Bouncer\BouncerFacade;
 
 class AdminServices
 {
+
+    public function getOne(int $id)
+    {
+        $user =  User::whereHas('roles', function ($query) {
+            $query->whereHas('abilities', function ($query) {
+                $query->where('name', 'control-all');
+            });
+        })->where('id', $id)->first();
+
+        return $user;
+    }
+    public function getAdmins()
+    {
+        $users =  User::whereHas('roles', function ($query) {
+            $query->whereHas('abilities', function ($query) {
+                $query->where('name', 'control-all');
+            });
+        })->get();
+
+        return $users;
+    }
+
     public function createAdmin(AdminDTO $admin)
     {
 

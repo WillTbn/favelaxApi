@@ -20,18 +20,9 @@ class FinanceController extends Controller
 
     public function index()
     {
-        $nvlOne =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('title', 'Edited registers');
-            });
-        })->get();
-        $nvlTwo =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('title', 'Deleted registers');
-            });
-        })->get();
+        $users =  $this->serviceFin->getAll();
 
-        return response()->json(['status'=> '200', 'data' => ['nivel 1' => $nvlOne, 'nivel 2'=> $nvlTwo]], 200);
+        return response()->json(['status'=> '200', 'data'=> $users], 200);
     }
 
     public function create(Request $request)
@@ -45,19 +36,19 @@ class FinanceController extends Controller
 
     public function show(string $id)
     {
-        $getUser = User::find($id);
-        if($getUser)
+        $currentUser = $this->serviceFin->getOne($id);
+        if($currentUser)
         {
-            return response()->json(['status'=> '200', 'data' => $getUser], 200);
+            return response()->json(['status'=> '200', 'data' => $currentUser], 200);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente no financeiro!'], 400);
     }
 
 
     public function update(Request $request,string $user)
     {
-        $getUser = User::find($user);
-        if($getUser){
+        $currentUser = $this->serviceFin->getOne($user);
+        if($currentUser){
 
             $request['id'] = $user;
             $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
@@ -68,6 +59,18 @@ class FinanceController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário na lista do Financeiro!'], 400);
+    }
+
+    public function destroy(string $user)
+    {
+        $currentUser = $this->serviceFin->getOne($user);
+        if($currentUser){
+
+            $getUser = $currentUser->delete();
+
+            return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
+        }
+        return response()->json(['status'=> '400','message' =>  'Usuário não se encontra na lista do Financeiro!'], 400 );
     }
 }

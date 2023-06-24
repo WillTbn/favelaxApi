@@ -19,11 +19,7 @@ class ModelatorController extends Controller
     }
     public function index()
     {
-        $list =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('title', 'Views Registers');
-            });
-        })->get();
+        $list =  $this->modService->getAll();
 
         return response()->json(['status'=> '200', 'data' => $list], 200);
     }
@@ -40,18 +36,17 @@ class ModelatorController extends Controller
 
     public function show(string $id)
     {
-        $getUser = User::find($id);
-        if($getUser)
-        {
+        $getUser = $this->modService->getOne($id);
+        if($getUser){
             return response()->json(['status'=> '200', 'data' => $getUser], 200);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de Modeladores.'], 400);
     }
 
     public function update(Request $request,string $user)
     {
-        return $this->modService->VerifyUser($user);
-        if( $this->modService->VerifyUser($user) ){
+        $getUser = $this->modService->getOne($user);
+        if( $getUser ){
 
             $request['id'] = $user;
             $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
@@ -62,6 +57,17 @@ class ModelatorController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente, na lista de Modelador!'], 400);
+    }
+    public function destroy(string $user)
+    {
+        $currentUser = $this->modService->getOne($user);
+        if($currentUser){
+            // return $user;
+            $getUser = $currentUser->delete();
+
+            return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
+        }
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente, na lista de Modelador!'], 400);
     }
 }

@@ -9,6 +9,23 @@ use Silber\Bouncer\BouncerFacade;
 
 class ModelatorServices
 {
+
+    public function getAll()
+    {
+        $users =  User::whereHas('roles', function ($query) {
+            $query->where('name', 'mod');
+        })->get();
+        return $users;
+    }
+    public function getOne(int $id)
+    {
+        $user =  User::whereHas('roles', function ($query) {
+            $query->where('name', 'mod');
+        })->where('id', $id)->first();
+
+        return $user;
+    }
+
     public function createModelador(UserDTO $mod)
     {
 
