@@ -5,7 +5,6 @@ use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Silber\Bouncer\BouncerFacade;
 
 class ModelatorServices
 {
@@ -34,7 +33,6 @@ class ModelatorServices
         $user->email = $mod->email;
         $user->password = Hash::make($mod->password);
         $user->saveOrFail();
-        BouncerFacade::assign('mod')->to($user);
         return $user;
     }
     public function updateAdmin(UpUserDTO $dto)

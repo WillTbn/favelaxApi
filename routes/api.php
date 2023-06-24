@@ -6,7 +6,6 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ModelatorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Silber\Bouncer\Bouncer;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,18 +26,18 @@ Route::group(['prefix' => 'auth'], function(){
 //Deleted-registers -> Financeiro nvl 1
 //Edited-registers -> Financeiro nvl 2
 
-Route::middleware(['auth:api','mod'])->group(function(){
+Route::middleware(['auth:api'])->group(function(){
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
 });
-Route::middleware(['auth:api','nvlone'])->group(function(){
+Route::middleware(['auth:api'])->group(function(){
     Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });
-Route::middleware(['auth:api','nvltwo'])->group(function(){
+Route::middleware(['auth:api'])->group(function(){
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });
 
-Route::middleware(['auth:api','admin'])->group(function(){
+Route::middleware(['auth:api'])->group(function(){
     Route::group(['prefix' =>'user'], function($router){
         Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashe');
         Route::post('/', [UserController::class, 'create'])->name('user.create');
@@ -63,7 +62,6 @@ Route::middleware(['auth:api','admin'])->group(function(){
         Route::delete('/{user}', [ModelatorController::class, 'destroy'])->name('modelador.destroy');
     });
     Route::group(['prefix'=>'finance'],function($router){
-        // Bouncer::Allow('')
         Route::get('/', [FinanceController::class, 'index'])->name('finance.index');
         Route::post('/', [FinanceController::class, 'create'])->name('finance.create');
         Route::get('/{user}', [FinanceController::class, 'show'])->name('finance.show');

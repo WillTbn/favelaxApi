@@ -2,7 +2,7 @@
 
 * Laravel10x
 * Autentificão Passport
-* ACL para controler de acesso, utilizado o Bouncer para esse controler
+
 * Token Bearer
 
 **A parte**
@@ -13,7 +13,6 @@
 ## Referência
 
  - [Laravel Passport](https://laravel.com/docs/10.x/passport#main-content)
- - [Bouncer eloquent authorization](https://github.com/JosephSilber/bouncer#customizing-bouncers-scope)
  - [DTO](https://dev.to/emrancu/data-transfer-object-dto-in-laravel-5apa)
  - [SoftDeletes](https://laravel.com/docs/10.x/eloquent#soft-deleting)
 

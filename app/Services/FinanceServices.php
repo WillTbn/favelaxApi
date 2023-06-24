@@ -5,8 +5,6 @@ use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Silber\Bouncer\BouncerFacade;
-
 class FinanceServices
 {
     public function getOne(int $id)
@@ -36,10 +34,10 @@ class FinanceServices
         $user->password = Hash::make($fin->password);
         $user->saveOrFail();
         if($fin->financeNvl && $fin->financeNvl == 1){
-            BouncerFacade::assign('financNvlOne')->to($user);
+
         }else if($fin->financeNvl && $fin->financeNvl == 2){
 
-            BouncerFacade::assign('financNvlTwo')->to($user);
+
         }
         return $user;
     }

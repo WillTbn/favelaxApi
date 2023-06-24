@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Silber\Bouncer\BouncerFacade;
 
 class DatabaseSeeder extends Seeder
 {
@@ -52,56 +51,6 @@ class DatabaseSeeder extends Seeder
         foreach($users as $user){
             User::create($user);
         }
-        $admin = BouncerFacade::role()->firstOrCreate([
-            'name' => 'admin',
-            'title' => 'administrator'
-        ]);
-        $mod = BouncerFacade::role()->firstOrCreate([
-            'name' => 'mod',
-            'title' => 'Modeler'
-        ]);
-        $financNvlOne = BouncerFacade::role()->firstOrCreate([
-            'name' => 'financNvlOne',
-            'title' => 'Financial nvl One'
-        ]);
-        $financNvlTwo = BouncerFacade::role()->firstOrCreate([
-            'name' => 'financNvlTwo',
-            'title' => 'Financial nvl Two'
-        ]);
-
-        $control = BouncerFacade::ability()->firstOrCreate([
-            'name' => 'control-all',
-            'title' => 'Control all'
-        ]);
-
-        $viewRegister = BouncerFacade::ability()->firstOrCreate([
-            'name' => 'view-registers',
-            'title' => 'Views Registers'
-        ]);
-
-        $deleted = BouncerFacade::ability()->firstOrCreate([
-            'name' => 'Deleted-registers',
-            'title' => 'Deleted registers'
-        ]);
-        $edited = BouncerFacade::ability()->firstOrCreate([
-            'name' => 'Edited-registers',
-            'title' => 'Edited registers'
-        ]);
-
-        BouncerFacade::Allow($admin)->to($control);
-        BouncerFacade::Allow($mod)->to($viewRegister);
-        BouncerFacade::Allow($financNvlOne)->to($deleted);
-        BouncerFacade::Allow($financNvlTwo)->to($edited);
-
-        $firstUser = User::first();
-        $SecondUser = User::where('id', 2)->first();
-        $thirdUser = User::where('id', 3)->first();
-        $fourthUser = User::where('id', 4)->first();
-
-        BouncerFacade::assign('admin')->to($firstUser);
-        BouncerFacade::assign('mod')->to($SecondUser);
-        BouncerFacade::assign('financNvlOne')->to($thirdUser);
-        BouncerFacade::assign('financNvlTwo')->to($fourthUser);
 
     }
 }
