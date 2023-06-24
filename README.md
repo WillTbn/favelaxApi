@@ -1,16 +1,56 @@
 # Projeto Favelax API
 
->guia-rapido e simples 
+>>>>>Laravel10x
+>>>>Autentificão Passport
+>>>ACL para controler de acesso, utilizado o Bouncer para esse controler
+>>Token Bearer
 
-1º apos clona o projeto e roda o composer, poderá utilizar o docker para cria o container do mesmo ele ira cria o projeto laravel e o banco mysql
-rode "docker composer up" ou se preferi o sail "./vendor/bin/sail up -d"
+**A parte**
+>>Data Tranfer Object(DTO)
+>SoftDelete nos Users
 
-2º rode a migrate
+## Referência
 
-3º antes de roda o projeto rode passport "sail art passport:install"
+ - [Laravel Passport](https://laravel.com/docs/10.x/passport#main-content)
+ - [Bouncer eloquent authorization](https://github.com/JosephSilber/bouncer#customizing-bouncers-scope)
+ - [DTO](https://dev.to/emrancu/data-transfer-object-dto-in-laravel-5apa)
+ - [SoftDeletes](https://laravel.com/docs/10.x/eloquent#soft-deleting)
+
+ _*em plena era Chat GPT logico que não foi só essas referencias mas tome*_
 
 
-4º configure no .env um e-mail e senha para primeiro usuario administrado(atualizar quando adicionar seed com outros usuarios)
 
+## Instalação
+1. Apos clona o projeto e rode no terminal na pasta do projeto:
 
-**Pronto parte inicial do projeto feita.**
+    ```
+    composer install
+    ```
+2. Poderá utilizar o docker para cria o containeres do laravel,ele ira cria o projeto laravel e o banco mysql
+configuração esta no docker-compose.yml
+rode: 
+
+```
+docker composer up 
+```
+
+3. Lembre de copia o env.example dentro do tem 2 variaveis que é opcional mas aconselhaveu e colocar um valor de email no formado valido(obvio não precisa ser real) na USER_ADMIN_EMAIL e coloque uma senha de acesso na USER_ADMIN_PASSWORD.
+
+4. rode as migrate mais as seed's
+
+```
+php artisan migrate --seed
+````
+
+5. Antes de roda o projeto rode passport para credencias 
+
+``` 
+php artisan passport:install  
+```
+
+Pronto basta acessa como administardo com o email e senha do .env que você colocou, se não consulte o DatabaSeeder.php para ver as credencias do mesmo e os demais usuários criado com comando `` --seed``.
+    
+## Autores
+
+- [@willTbn](https://github.com/WillTbn)
+

@@ -2,35 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObject\User\UpUserDTO;
 use App\Models\User;
+use App\Services\UserServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function __construct()
+    private UserServices $userServ;
+    public function __construct(
+        UserServices $serviceUser
+    )
     {
         $this->middleware('auth:api');
+        $this->userServ = $serviceUser;
     }
-    public function getDetails()
-    {
-        // $user = auth('')
-
-        $user = auth('api')->user();
-        return 'oi';
-        // return $user->getRoles();
-    }
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $userCurrent = auth('api')->user()->type;
+        // return dd($userCurrent[0]);
+        if($userCurrent[0] == "mod"){
+            $users = User::whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            })->where('id', '!=',auth('api')->user()->id)->get();
+        }else{
+            $users = User::all();
+
+        }
+
+        return response()->json(['status' => '200', 'data' =>  $users], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create(Request $request)
     {
         $validatedData = $request->validate([
@@ -43,50 +48,28 @@ class UserController extends Controller
 
         $user = User::create($validatedData);
 
-        // $token = $user->createToken('BearerToken')->accessToken;
-
         return response()->json(['status' => '200','data' => $user], 200);
 
     }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function update(Request $request, string $user)
     {
-        //
+        $request['id'] = $user;
+        $getUser = User::find($user);
+        if($getUser){
+            $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $registro = $this->userServ->updateUser($dto);
+
+            if($registro){
+                return response()->json(['status'=> '200', 'message' => 'Dados atualizado com sucesso','data' => $registro], 200);
+            }
+            return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * List of items in the recycle bin
-     * @return \Illuminate\Http\Response
-     */
     public function trashed()
     {
-
         $users = User::onlyTrashed()->get();
 
         return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );

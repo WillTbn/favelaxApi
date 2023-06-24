@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -26,5 +28,14 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+    public function render($request, Throwable $exception)
+    {
+        //Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException
+
+        if ($exception instanceof AuthorizationException || $exception instanceof AccessDeniedHttpException) {
+            return response()->json(['error' => 'Não tem autorização para tal.'], 403);
+        }
+        return parent::render($request, $exception);
     }
 }

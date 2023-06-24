@@ -35,7 +35,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    public function getTypeAttribute()
+    {
+        return $this->getRoles();
+    }
     /**
      * The attributes that should be cast.
      *

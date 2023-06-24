@@ -52,11 +52,12 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(string $user)
     {
-        if($user)
+        $getUser = User::find($user);
+        if($getUser)
         {
-            return response()->json(['status'=> '200', 'data' => $user], 200);
+            return response()->json(['status'=> '200', 'data' => $getUser], 200);
         }
         return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
     }
@@ -64,16 +65,19 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, string $user)
     {
-        $request['id'] = $user->id;
-        $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm']));
-        $registro = $this->adminSer->updateAdmin($dto);
+        $request['id'] = $user;
+        $getUser = User::find($user);
+        if($getUser){
+            $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $registro = $this->adminSer->updateAdmin($dto);
 
-        if($registro){
-            return response()->json(['status'=> '200', 'message' => 'Dados atualizado com sucesso','data' => $registro], 200);
+            if($registro){
+                return response()->json(['status'=> '200', 'message' => 'Dados atualizado com sucesso','data' => $registro], 200);
+            }
+            return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
-        return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
     }
 
 }

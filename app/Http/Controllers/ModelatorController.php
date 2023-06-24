@@ -5,40 +5,35 @@ namespace App\Http\Controllers;
 use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
 use App\Models\User;
-use App\Services\FinanceServices;
+use App\Services\ModelatorServices;
 use Illuminate\Http\Request;
 
-class FinanceController extends Controller
+class ModelatorController extends Controller
 {
-    private FinanceServices $serviceFin;
+    private ModelatorServices $modService;
     public function __construct(
-        FinanceServices $finance,
+        ModelatorServices $serviceMod
     )
     {
-        $this->serviceFin = $finance;
+        $this->modService = $serviceMod;
     }
-
     public function index()
     {
-        $nvlOne =  User::whereHas('roles', function ($query) {
+        $list =  User::whereHas('roles', function ($query) {
             $query->whereHas('abilities', function ($query) {
-                $query->where('title', 'Edited registers');
-            });
-        })->get();
-        $nvlTwo =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('title', 'Deleted registers');
+                $query->where('title', 'Views Registers');
             });
         })->get();
 
-        return response()->json(['status'=> '200', 'data' => ['nivel 1' => $nvlOne, 'nivel 2'=> $nvlTwo]], 200);
+        return response()->json(['status'=> '200', 'data' => $list], 200);
     }
 
     public function create(Request $request)
     {
-        $dto = new UserDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'nivel']));
 
-        $user = $this->serviceFin->createfinance($dto);
+        $dto = new UserDTO(...$request->only(['name', 'email', 'password', 'password_confirm']));
+
+        $user = $this->modService->createModelador($dto);
 
         return response()->json(['status'=> '200', 'data' => $user], 200);
     }
@@ -53,15 +48,14 @@ class FinanceController extends Controller
         return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
     }
 
-
     public function update(Request $request,string $user)
     {
-        $getUser = User::find($user);
-        if($getUser){
+        return $this->modService->VerifyUser($user);
+        if( $this->modService->VerifyUser($user) ){
 
             $request['id'] = $user;
             $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
-            $registro = $this->serviceFin->updateFinance($dto);
+            $registro = $this->modService->updateAdmin($dto);
 
             if($registro){
                 return response()->json(['status'=> '200', 'message' => 'Dados atualizado com sucesso','data' => $registro], 200);

@@ -71,14 +71,4 @@ class AuthController extends Controller
         }
         return response()->json(['message' =>  'unauthorized'], 401);
     }
-    public function getUserDetail()
-    {
-        if(Auth::guard('api')->check()){
-            $user = auth('api')->user();
-            return $user->getRoles();
-            return BouncerFacade::is($user)->an('modelador');
-            return response()->json(['data' =>  $user], 200);
-        }
-        return response()->json(['message' =>  'unauthorized'], 401);
-    }
 }

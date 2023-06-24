@@ -7,31 +7,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Silber\Bouncer\BouncerFacade;
 
-class FinanceServices
+class ModelatorServices
 {
-    public function createfinance(UserDTO $fin)
+    public function createModelador(UserDTO $mod)
     {
 
         $user = new User();
-        $user->name = $fin->name;
-        $user->email = $fin->email;
-        $user->password = Hash::make($fin->password);
+        $user->name = $mod->name;
+        $user->email = $mod->email;
+        $user->password = Hash::make($mod->password);
         $user->saveOrFail();
-        if($fin->financeNvl && $fin->financeNvl == 1){
-            BouncerFacade::assign('financNvlOne')->to($user);
-        }else if($fin->financeNvl && $fin->financeNvl == 2){
-
-            BouncerFacade::assign('financNvlTwo')->to($user);
-        }
+        BouncerFacade::assign('mod')->to($user);
         return $user;
     }
-    public function updateFinance(UpUserDTO $dto)
+    public function updateAdmin(UpUserDTO $dto)
     {
         $user = User::where('id', $dto->id)->first();
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
         $user->saveOrFail();
 
+        return $user;
+    }
+    public function VerifyUser(string $id){
+        $user = User::find($id);
         return $user;
     }
 }
