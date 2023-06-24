@@ -6,8 +6,9 @@
 * Token Bearer
 
 **A parte**
-*Data Tranfer Object(DTO)
-*SoftDelete nos Users
+
+* Data Tranfer Object(DTO)
+* SoftDelete nos Users
 
 ## Referência
 
