@@ -45,18 +45,18 @@ class User extends Authenticatable
     ];
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' ? true : false;
     }
     public function isModelador()
     {
-        return $this->role === 'modelador';
+        return ($this->role === 'modelador' || $this->role === 'admin') ? true : false;
     }
     public function isFinanceOne()
     {
-        return $this->role === 'FinanceiroFirst';
+        return ($this->role === 'FinanceiroFirst' || $this->role === 'admin') ? true : false;
     }
     public function isFinanceSecond()
     {
-        return $this->role === 'FinanceiroSecond';
+        return ($this->role === 'FinanceiroSecond' || $this->role === 'admin') ? true : false;
     }
 }

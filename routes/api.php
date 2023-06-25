@@ -22,18 +22,18 @@ Route::group(['prefix' => 'auth'], function(){
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
 
-Route::middleware(['auth:api','read'])->group(function(){
+Route::middleware(['auth:api','can:modelador'])->group(function(){
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
 });
-Route::middleware(['auth:api', 'delete'])->group(function(){
+Route::middleware(['auth:api', 'can:nvlOne'])->group(function(){
     Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });
-Route::middleware(['auth:api', 'update'])->group(function(){
+Route::middleware(['auth:api', 'can:nvltwo'])->group(function(){
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });
 
-Route::middleware(['auth:api', 'admin'])->group(function(){
+Route::middleware(['auth:api','can:admin'])->group(function(){
     Route::group(['prefix' =>'user'], function($router){
         Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashe');
         Route::post('/', [UserController::class, 'create'])->name('user.create');
