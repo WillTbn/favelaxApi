@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
+use App\Enums\Nivel;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,16 +12,12 @@ class ModelatorServices
 
     public function getAll()
     {
-        $users =  User::whereHas('roles', function ($query) {
-            $query->where('name', 'mod');
-        })->get();
+        $users = User::where('role', 'modelador')->get();
         return $users;
     }
     public function getOne(int $id)
     {
-        $user =  User::whereHas('roles', function ($query) {
-            $query->where('name', 'mod');
-        })->where('id', $id)->first();
+        $user =  User::where('role', 'modelador')->where('id', $id)->first();
 
         return $user;
     }
@@ -32,6 +29,7 @@ class ModelatorServices
         $user->name = $mod->name;
         $user->email = $mod->email;
         $user->password = Hash::make($mod->password);
+        $user->role = Nivel::MOD->getValue();
         $user->saveOrFail();
         return $user;
     }

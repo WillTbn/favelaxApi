@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\DataTransferObject\admin\AdminDTO;
 use App\DataTransferObject\admin\UpAdminDTO;
+use App\Enums\Nivel;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,21 +12,13 @@ class AdminServices
 
     public function getOne(int $id)
     {
-        $user =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('name', 'control-all');
-            });
-        })->where('id', $id)->first();
+        $user =  User::where('role', 'admin')->where('id', $id)->first();
 
         return $user;
     }
     public function getAdmins()
     {
-        $users =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('name', 'control-all');
-            });
-        })->get();
+        $users = User::where('role', 'admin')->get();
 
         return $users;
     }
@@ -37,6 +30,7 @@ class AdminServices
         $user->name = $admin->name;
         $user->email = $admin->email;
         $user->password = Hash::make($admin->password);
+        $user->role = Nivel::ADMIN->getValue();
         $user->saveOrFail();
         return $user;
     }

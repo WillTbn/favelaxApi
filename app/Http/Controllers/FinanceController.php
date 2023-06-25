@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObject\Finance\FinanceDTO;
+use App\DataTransferObject\Finance\UpFinanceDTO;
 use App\DataTransferObject\User\UpUserDTO;
-use App\DataTransferObject\User\UserDTO;
-use App\Models\User;
 use App\Services\FinanceServices;
 use Illuminate\Http\Request;
 
@@ -27,7 +27,7 @@ class FinanceController extends Controller
 
     public function create(Request $request)
     {
-        $dto = new UserDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'nivel']));
+        $dto = new FinanceDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'nivel']));
 
         $user = $this->serviceFin->createfinance($dto);
 
@@ -51,7 +51,7 @@ class FinanceController extends Controller
         if($currentUser){
 
             $request['id'] = $user;
-            $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $dto = new UpFinanceDTO(...$request->only(['id','name','password', 'password_confirm', 'nivel']));
             $registro = $this->serviceFin->updateFinance($dto);
 
             if($registro){

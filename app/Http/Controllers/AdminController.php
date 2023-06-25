@@ -18,7 +18,7 @@ class AdminController extends Controller
     )
     {
         $this->middleware('auth:api');
-        $this->loggedUser = auth()->user();
+        $this->loggedUser = auth()->user('api');
         $this->adminSer = $serviceAdmin;
     }
 
@@ -36,7 +36,9 @@ class AdminController extends Controller
     public function create(Request $request)
     {
         // return $request;
-        $dto = new AdminDTO(...$request->only(['name', 'email', 'password', 'password_confirm']));
+        $dto = new AdminDTO(...$request->only([
+            'name', 'email', 'password', 'password_confirm'
+        ]));
         // $dto->password = Hash::make($dto['password']);
         // return $dto;
 
@@ -50,12 +52,12 @@ class AdminController extends Controller
      */
     public function show(string $user)
     {
-        $getUser = User::find($user);
+        $getUser = $this->adminSer->getOne($user);
         if($getUser)
         {
             return response()->json(['status'=> '200', 'data' => $getUser], 200);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de adm!'], 400);
     }
 
     /**
@@ -64,7 +66,7 @@ class AdminController extends Controller
     public function update(Request $request, string $user)
     {
         $request['id'] = $user;
-        $getUser = User::find($user);
+        $getUser = $this->adminSer->getOne($user);
         if($getUser){
             $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm']));
             $registro = $this->adminSer->updateAdmin($dto);
@@ -74,6 +76,7 @@ class AdminController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de adm!'], 400);
     }
     public function destroy(string $user)
     {

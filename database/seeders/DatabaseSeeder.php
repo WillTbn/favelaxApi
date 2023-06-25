@@ -19,31 +19,36 @@ class DatabaseSeeder extends Seeder
                 'name' =>'Admin User',
                 'email' => env('USER_ADMIN_EMAIL', 'admin@gmail.com'),
                 'password' => bcrypt(env('USER_ADMIN_PASSWORD', '12345678')),
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role' =>  'admin'
             ],
             [
                 'name' =>'Moderador User',
                 'email' => 'modelador@gmail.com',
                 'password' => bcrypt('123456'),
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role' =>  'modelador'
             ],
             [
                 'name' =>'Financeiro Nvl One',
                 'email' => 'financeiro_one@gmail.com',
                 'password' => bcrypt('123456'),
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role' =>  'FinanceiroFirst'
             ],
             [
                 'name' =>'Financeiro Nvl One',
                 'email' => 'financeiro_two@gmail.com',
                 'password' => bcrypt('123456'),
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role' =>  'FinanceiroSecond'
             ],
             [
                 'name' =>'User low',
                 'email' => 'user@gmail.com',
                 'password' => bcrypt('123456'),
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role' => 'low'
             ]
         ];
         // \App\Models\User::factory(10)->create();

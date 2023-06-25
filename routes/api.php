@@ -21,23 +21,19 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'auth'], function(){
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
-//control-all -> Admin
-//view-registers -> Modelador
-//Deleted-registers -> Financeiro nvl 1
-//Edited-registers -> Financeiro nvl 2
 
-Route::middleware(['auth:api'])->group(function(){
+Route::middleware(['auth:api','read'])->group(function(){
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
 });
-Route::middleware(['auth:api'])->group(function(){
+Route::middleware(['auth:api', 'delete'])->group(function(){
     Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });
-Route::middleware(['auth:api'])->group(function(){
+Route::middleware(['auth:api', 'update'])->group(function(){
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });
 
-Route::middleware(['auth:api'])->group(function(){
+Route::middleware(['auth:api', 'admin'])->group(function(){
     Route::group(['prefix' =>'user'], function($router){
         Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashe');
         Route::post('/', [UserController::class, 'create'])->name('user.create');

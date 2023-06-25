@@ -1,38 +1,42 @@
 <?php
 
-namespace App\DataTransferObject\Admin;
+namespace App\DataTransferObject\Finance;
 
 use App\DataTransferObject\AbstractDTO;
 use App\DataTransferObject\InterfaceDTO;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rule;
 
-class AdminDTO extends AbstractDTO implements InterfaceDTO
+class UpFinanceDTO extends AbstractDTO implements InterfaceDTO
 {
     public readonly string $name;
-    public readonly string $email;
     public readonly string $password;
     public readonly string $password_confirm;
-
+    public readonly string $nivel;
+    public readonly string $id;
     public function __construct(
-        ?string $name  = null,
-        ?string $email = null,
+        ?string $name = null,
         ?string $password = null,
-        ?string $password_confirm = null
+        ?string $password_confirm = null,
+        ?string $nivel = null,
+        ?string $id = null,
     )
     {
         $this->name = $name ?? '';
-        $this->email = $email ?? '';
         $this->password = $password ?? '';
         $this->password_confirm = $password_confirm ?? '';
+        $this->nivel = $nivel ?? '';
+        $this->id = $id ?? '';
         $this->validate();
     }
     public function rules():array
     {
         return [
             'name' => 'required|string|min:4|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'password_confirm' =>'required|same:password',
+            'nivel' => 'required|max:1',
+            'id' => 'required'
         ];
     }
     public function messages():array

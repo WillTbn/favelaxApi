@@ -9,20 +9,29 @@ use Illuminate\Validation\Rule;
 
 class UpUserDTO extends AbstractDTO implements InterfaceDTO
 {
+    public readonly string $name;
+    public readonly int $id;
+    public readonly string $password;
+    public readonly string $password_confirm;
+
     public function __construct(
-        public readonly int $id,
-        public readonly string $name,
+        ?int $id = null,
+        ?string $name = null,
         // public readonly string $email,
-        public readonly string $password,
-        public readonly string $password_confirm
+       ?string $password = null,
+       ?string $password_confirm = null
     )
     {
-
+        $this->id = $id ?? '';
+        $this->name = $name ?? '';
+        $this->password = $password ?? '';
+        $this->password_confirm = $password_confirm ?? '';
         $this->validate();
     }
     public function rules():array
     {
         return [
+            'id' => 'required',
             'name' => 'required|string|min:4|max:255',
             // 'email' => [
                 //     'required', 'string','email','max:255',
