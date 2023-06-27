@@ -1,13 +1,12 @@
 <?php
 namespace App\Services;
 
-use App\DataTransferObject\User\UpUserDTO;
-use App\DataTransferObject\User\UserDTO;
+use App\DataTransferObject\Modeler\ModelerDTO;
+use App\DataTransferObject\Modeler\UpModelerDTO;
 use App\Models\Modeler;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class ModelatorServices
+class ModelerServices
 {
 
     public function getAll()
@@ -22,20 +21,19 @@ class ModelatorServices
         return $user;
     }
 
-    public function createModelador(UserDTO $mod)
+    public function createModelador(ModelerDTO $mod)
     {
 
-        $user = new User();
+        $user = new Modeler();
         $user->name = $mod->name;
         $user->email = $mod->email;
         $user->password = Hash::make($mod->password);
-        $user->role = Nivel::MOD->getValue();
         $user->saveOrFail();
         return $user;
     }
-    public function updateAdmin(UpUserDTO $dto)
+    public function updateAdmin(UpModelerDTO $dto)
     {
-        $user = User::where('id', $dto->id)->first();
+        $user = Modeler::where('id', $dto->id)->first();
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
         $user->saveOrFail();
@@ -43,7 +41,7 @@ class ModelatorServices
         return $user;
     }
     public function VerifyUser(string $id){
-        $user = User::find($id);
+        $user = Modeler::find($id);
         return $user;
     }
 }

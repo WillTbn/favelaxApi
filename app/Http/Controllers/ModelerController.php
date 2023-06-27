@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObject\User\UpUserDTO;
-use App\DataTransferObject\User\UserDTO;
-use App\Models\User;
-use App\Services\ModelatorServices;
+use App\DataTransferObject\Modeler\ModelerDTO;
+use App\DataTransferObject\Modeler\UpModelerDTO;
+use App\Models\Modeler;
+use App\Services\ModelerServices;
 use Illuminate\Http\Request;
 
-class ModelatorController extends Controller
+class ModelerController extends Controller
 {
-    private ModelatorServices $modService;
+    private ModelerServices $modService;
     public function __construct(
-        ModelatorServices $serviceMod
+        ModelerServices $serviceMod
     )
     {
         $this->modService = $serviceMod;
@@ -27,7 +27,7 @@ class ModelatorController extends Controller
     public function create(Request $request)
     {
 
-        $dto = new UserDTO(...$request->only(['name', 'email', 'password', 'password_confirm']));
+        $dto = new ModelerDTO(...$request->only(['name', 'email', 'password', 'password_confirm']));
 
         $user = $this->modService->createModelador($dto);
 
@@ -49,7 +49,7 @@ class ModelatorController extends Controller
         if( $getUser ){
 
             $request['id'] = $user;
-            $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $dto = new UpModelerDTO(...$request->only(['id','name','password', 'password_confirm']));
             $registro = $this->modService->updateAdmin($dto);
 
             if($registro){
@@ -69,5 +69,35 @@ class ModelatorController extends Controller
             return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
         }
         return response()->json(['status'=> '400', 'message' => 'Usuário não existente, na lista de Modelador!'], 400);
+    }
+    public function trashed()
+    {
+        $users = Modeler::onlyTrashed()->get();
+
+        return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );
+    }
+    public function restore(string $id)
+    {
+
+        $getUser = Modeler::onlyTrashed()->where(['id' => $id])->first();
+        if($getUser){
+            $getUser->restore();
+            return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
+        }
+
+        return response()->json(['status'=>'200','message'=>'Usuário não se encontra na lista de exclusão!'], 400);
+    }
+
+
+    public function deleteForce(string $id)
+    {
+        $getUser = Modeler::onlyTrashed()->where(['id' => $id])->first();
+        if($getUser)
+        {
+            $getUser->forceDelete();
+
+            return response()->json(['status'=> '200','message'=> 'Usuario excluido do sistema!'], 200);
+        }
+        return response()->json(['status'=>'400', 'message' =>'Usuário não se encontra na lista de exclusão!'], 400);
     }
 }

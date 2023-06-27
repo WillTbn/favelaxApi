@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\DataTransferObject\Finance\FinanceDTO;
 use App\DataTransferObject\Finance\UpFinanceDTO;
 use App\DataTransferObject\User\UpUserDTO;
-use App\Services\FinanceServices;
+use App\Models\Financial;
+use App\Services\FinancialServices;
 use Illuminate\Http\Request;
 
 class FinanceController extends Controller
 {
-    private FinanceServices $serviceFin;
+    private FinancialServices $serviceFin;
     public function __construct(
-        FinanceServices $finance,
+        FinancialServices $finance,
     )
     {
         $this->serviceFin = $finance;
@@ -27,7 +28,7 @@ class FinanceController extends Controller
 
     public function create(Request $request)
     {
-        $dto = new FinanceDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'nivel']));
+        $dto = new FinanceDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'level']));
 
         $user = $this->serviceFin->createfinance($dto);
 
@@ -51,7 +52,7 @@ class FinanceController extends Controller
         if($currentUser){
 
             $request['id'] = $user;
-            $dto = new UpFinanceDTO(...$request->only(['id','name','password', 'password_confirm', 'nivel']));
+            $dto = new UpFinanceDTO(...$request->only(['id','name','password', 'password_confirm', 'level']));
             $registro = $this->serviceFin->updateFinance($dto);
 
             if($registro){
@@ -59,7 +60,7 @@ class FinanceController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário na lista do Financeiro!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não se encontra na lista do Financeiro!'], 400);
     }
 
     public function destroy(string $user)
@@ -72,5 +73,34 @@ class FinanceController extends Controller
             return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
         }
         return response()->json(['status'=> '400','message' =>  'Usuário não se encontra na lista do Financeiro!'], 400 );
+    }
+    public function trashed()
+    {
+        $users = Financial::onlyTrashed()->get();
+
+        return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );
+    }
+    public function restore(string $id)
+    {
+
+        $getUser = Financial::onlyTrashed()->where(['id' => $id])->first();
+        if($getUser){
+            $getUser->restore();
+            return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
+        }
+
+        return response()->json(['status'=>'200','message'=>'Usuário não se encontra na lista de exclusão!'], 400);
+    }
+
+    public function deleteForce(string $id)
+    {
+        $getUser = Financial::onlyTrashed()->where(['id' => $id])->first();
+        if($getUser)
+        {
+            $getUser->forceDelete();
+
+            return response()->json(['status'=> '200','message'=> 'Usuario excluido do sistema!'], 200);
+        }
+        return response()->json(['status'=>'400', 'message' =>'Usuário não se encontra na lista de exclusão!'], 400);
     }
 }

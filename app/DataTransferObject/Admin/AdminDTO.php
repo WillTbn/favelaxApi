@@ -30,7 +30,7 @@ class AdminDTO extends AbstractDTO implements InterfaceDTO
     {
         return [
             'name' => 'required|string|min:4|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8',
             'password_confirm' =>'required|same:password',
         ];

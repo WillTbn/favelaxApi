@@ -3,7 +3,7 @@
 use App\Http\Controllers\AdminController;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FinanceController;
-use App\Http\Controllers\ModelatorController;
+use App\Http\Controllers\ModelerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,11 +55,11 @@ use Illuminate\Support\Facades\Route;
 
 //     });
 //     Route::group(['prefix'=>'modelador'],function($router){
-//         Route::get('/', [ModelatorController::class, 'index'])->name('modelador.index');
-//         Route::post('/', [ModelatorController::class, 'create'])->name('modelador.create');
-//         Route::get('/{user}', [ModelatorController::class, 'show'])->name('modelador.show');
-//         Route::put('/{user}', [ModelatorController::class, 'update'])->name('modelador.update');
-//         Route::delete('/{user}', [ModelatorController::class, 'destroy'])->name('modelador.destroy');
+//         Route::get('/', [ModelerController::class, 'index'])->name('modelador.index');
+//         Route::post('/', [ModelerController::class, 'create'])->name('modelador.create');
+//         Route::get('/{user}', [ModelerController::class, 'show'])->name('modelador.show');
+//         Route::put('/{user}', [ModelerController::class, 'update'])->name('modelador.update');
+//         Route::delete('/{user}', [ModelerController::class, 'destroy'])->name('modelador.destroy');
 //     });
 //     Route::group(['prefix'=>'finance'],function($router){
 //         Route::get('/', [FinanceController::class, 'index'])->name('finance.index');

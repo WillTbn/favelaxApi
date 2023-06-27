@@ -12,13 +12,13 @@ class AdminServices
 
     public function getOne(int $id)
     {
-        $user =  Admin::where('id', $id)->first();
+        $user =  Admin::find($id);
 
         return $user;
     }
     public function getAdmins()
     {
-        $users =  Admin::all();
+        $users =  Admin::where('id', '!=',auth('api')->user()->id)->get();
 
         return $users;
     }
@@ -30,7 +30,6 @@ class AdminServices
         $user->name = $admin->name;
         $user->email = $admin->email;
         $user->password = Hash::make($admin->password);
-        $user->role = Nivel::ADMIN->getValue();
         $user->saveOrFail();
         return $user;
     }

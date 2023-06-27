@@ -35,9 +35,14 @@ class AdminLoginController extends Controller
         }
     }
 
-    public function adminDashboard()
+    public function adminLogout()
     {
-        return 'oi';
-        return response()->json(Auth::guard('user')->user());
+        if(Auth::guard('api')->check()){
+            $user = auth('api')->user();
+            $user->token()->revoke();
+
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
+        return response()->json(['message' =>  'unauthorized'], 401);
     }
 }
