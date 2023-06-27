@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -32,9 +33,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         //Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException
+        //Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
 
         if ($exception instanceof AuthorizationException || $exception instanceof AccessDeniedHttpException) {
             return response()->json(['error' => 'Não tem autorização para tal.'], 403);
+        }
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            return response()->json(['error' => 'Rota não encontrada, verifique se o verbo esta correto.'], 403);
         }
         return parent::render($request, $exception);
     }

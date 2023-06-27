@@ -126,7 +126,6 @@ return [
             'model' => App\Models\Financial::class,
         ]
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

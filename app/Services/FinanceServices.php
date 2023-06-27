@@ -6,6 +6,7 @@ use App\DataTransferObject\User\UserDTO;
 use App\Models\Financial;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 class FinanceServices
 {
     public function getOne(int $id)
@@ -22,27 +23,26 @@ class FinanceServices
 
         return $users;
     }
-    public function createfinance(UserDTO $fin)
+    public function createfinance(FinanceDTO $fin)
     {
 
         $user = new User();
         $user->name = $fin->name;
         $user->email = $fin->email;
         $user->password = Hash::make($fin->password);
+        $user->role = $fin->nivel === "2"  ? Nivel::SECOND->getValue() : Nivel::FIRST->getValue();
         $user->saveOrFail();
-        if($fin->financeNvl && $fin->financeNvl == 1){
-
-        }else if($fin->financeNvl && $fin->financeNvl == 2){
-
-
-        }
         return $user;
     }
-    public function updateFinance(UpUserDTO $dto)
+    public function updateFinance(UpFinanceDTO $dto)
     {
+
+
         $user = User::where('id', $dto->id)->first();
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
+        // qualquer outro valor passado irá se considerado nivel 1 para o financeiro
+        $user->role = $dto->nivel === "2"  ? Nivel::SECOND->getValue() : Nivel::FIRST->getValue();
         $user->saveOrFail();
 
         return $user;

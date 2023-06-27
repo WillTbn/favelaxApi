@@ -21,15 +21,12 @@ class UserController extends Controller
     }
     public function index()
     {
-        $userCurrent = auth('api')->user()->type;
+        $type = auth('api')->user()->role;
         // return dd($userCurrent[0]);
-        if($userCurrent[0] == "mod"){
-            $users = User::whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin');
-            })->where('id', '!=',auth('api')->user()->id)->get();
+        if($type == "modelador"){
+            $users = $this->userServ->getNotAdmin();
         }else{
             $users = User::all();
-
         }
 
         return response()->json(['status' => '200', 'data' =>  $users], 200);
@@ -42,21 +39,24 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'password_confirm' => 'required|string|min:8|same:password',
         ]);
 
         $validatedData['password'] = Hash::make($validatedData['password']);
 
         $user = User::create($validatedData);
 
-        return response()->json(['status' => '200','data' => $user], 200);
+        return response()->json(['status' => '200', 'message'=>'Usuário criado com sucesso!','data' => $user], 200);
 
     }
 
     public function update(Request $request, string $user)
     {
-        $request['id'] = $user;
-        $getUser = User::find($user);
+        $getUser = $this->userServ->getOne($user);
+
+        // return $getUser;
         if($getUser){
+            $request['id'] = $getUser->id;
             $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
             $registro = $this->userServ->updateUser($dto);
 
@@ -65,6 +65,7 @@ class UserController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
+        return response()->json(['status'=> '400', 'message' => 'Usuário não encontrado!'], 400);
     }
 
 
@@ -83,7 +84,7 @@ class UserController extends Controller
             return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
         }
 
-        // return response()->json(['error', 'Usuário não se encontra na lista de exclusão!'], 400);
+        return response()->json(['error', 'Usuário não se encontra na lista de exclusão!'], 400);
     }
     public function destroy(User $user)
     {

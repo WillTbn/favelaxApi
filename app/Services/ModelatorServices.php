@@ -29,6 +29,7 @@ class ModelatorServices
         $user->name = $mod->name;
         $user->email = $mod->email;
         $user->password = Hash::make($mod->password);
+        $user->role = Nivel::MOD->getValue();
         $user->saveOrFail();
         return $user;
     }

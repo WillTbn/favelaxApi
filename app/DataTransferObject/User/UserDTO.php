@@ -8,16 +8,22 @@ use Illuminate\Contracts\Validation\Validator;
 
 class UserDTO extends AbstractDTO implements InterfaceDTO
 {
-    public readonly ?int $financeNvl;
+    public readonly string $name;
+    public readonly string $email;
+    public readonly string $password;
+    public readonly string $password_confirm;
     public function __construct(
-        public readonly string $name,
-        public readonly string $email,
-        public readonly string $password,
-        public readonly string $password_confirm,
-        ?int $nivel = null,
+        ?string $name = null,
+        ?string $email = null,
+        ?string $password = null,
+        ?string $password_confirm = null,
     )
     {
-        $this->financeNvl = $nivel;
+        $this->name = $name ?? '';
+        $this->email = $email ?? '';
+        $this->password = $password ?? '';
+        $this->password_confirm = $password_confirm ?? '';
+
         $this->validate();
     }
     public function rules():array

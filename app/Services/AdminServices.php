@@ -30,6 +30,7 @@ class AdminServices
         $user->name = $admin->name;
         $user->email = $admin->email;
         $user->password = Hash::make($admin->password);
+        $user->role = Nivel::ADMIN->getValue();
         $user->saveOrFail();
         return $user;
     }
