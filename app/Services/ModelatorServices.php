@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
+use App\Models\Modeler;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,16 +12,12 @@ class ModelatorServices
 
     public function getAll()
     {
-        $users =  User::whereHas('roles', function ($query) {
-            $query->where('name', 'mod');
-        })->get();
+        $users = Modeler::all();
         return $users;
     }
     public function getOne(int $id)
     {
-        $user =  User::whereHas('roles', function ($query) {
-            $query->where('name', 'mod');
-        })->where('id', $id)->first();
+        $user =  Modeler::find($id);
 
         return $user;
     }

@@ -9,7 +9,7 @@ class UserServices
 {
     public function updateUser(UpUserDTO $dto)
     {
-        $user = User::where('id', $dto->id)->first();
+        $user = User::find($dto->id);
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
         $user->saveOrFail();

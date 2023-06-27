@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\DataTransferObject\User\UpUserDTO;
 use App\DataTransferObject\User\UserDTO;
+use App\Models\Financial;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 class FinanceServices
@@ -10,18 +11,14 @@ class FinanceServices
     public function getOne(int $id)
     {
 
-        $user =  User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin')->orWhere('name', 'mod');
-        })->where('id', $id)->first();
+        $user =  Financial::find($id);
 
 
         return $user;
     }
     public function getAll()
     {
-        $users =  User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin')->orWhere('name', 'mod');
-        })->get();
+        $users =  Financial::get();
 
         return $users;
     }

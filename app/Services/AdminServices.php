@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\DataTransferObject\admin\AdminDTO;
 use App\DataTransferObject\admin\UpAdminDTO;
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,21 +12,13 @@ class AdminServices
 
     public function getOne(int $id)
     {
-        $user =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('name', 'control-all');
-            });
-        })->where('id', $id)->first();
+        $user =  Admin::where('id', $id)->first();
 
         return $user;
     }
     public function getAdmins()
     {
-        $users =  User::whereHas('roles', function ($query) {
-            $query->whereHas('abilities', function ($query) {
-                $query->where('name', 'control-all');
-            });
-        })->get();
+        $users =  Admin::all();
 
         return $users;
     }
@@ -33,7 +26,7 @@ class AdminServices
     public function createAdmin(AdminDTO $admin)
     {
 
-        $user = new User();
+        $user = new Admin();
         $user->name = $admin->name;
         $user->email = $admin->email;
         $user->password = Hash::make($admin->password);
@@ -42,7 +35,7 @@ class AdminServices
     }
     public function updateAdmin(UpAdminDTO $dto)
     {
-        $user = User::where('id', $dto->id)->first();
+        $user = Admin::find($dto->id);
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
         $user->saveOrFail();
