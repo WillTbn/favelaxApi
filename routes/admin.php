@@ -1,20 +1,21 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ModelerController;
 use App\Http\Controllers\UserController;
+use App\Models\Admin;
+use App\Models\User;
 
 Route::post('admin/login', [AdminLoginController::class, 'adminLogin'])->name('admin.login');
-
+Route::post('admin/logout', [AdminLoginController::class, 'adminLogout'])->name('admin.logout');
 Route::group( ['prefix'=> 'admin', 'middleware' =>['auth:admin-api', 'scopes:admin'] ], function(){
     Route::post('dashboard', [AdminLoginController::class, 'adminDashboard'])->name('admin.dashboard');
 
 });
-Route::middleware(['auth:admin-api', 'scopes:admin'])->group(function(){
+Route::middleware(['auth:admin-api', 'can:viewAny,\App\Models\Admin'])->group(function(){
     Route::group(['prefix'=>'admin'],function($router){
         Route::post('/create', [AdminController::class, 'create'])->name('admin.create');
         // Route::get('/details', [AuthController::class, 'getUserDetail'])->name('admin.details');
@@ -50,12 +51,26 @@ Route::middleware(['auth:admin-api', 'scopes:admin'])->group(function(){
     });
 
     Route::group(['prefix' =>'user'], function($router){
-        Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashe');
+        Route::get('/trashed', [UserController::class, 'trashed'])->name('user.trashed');
         Route::post('/', [UserController::class, 'create'])->name('user.create');
-        Route::put('/restore/{user}', [UserController::class, 'restore'])->name('user.restore');
         Route::delete('/user/forcedelete/{user}', [UserController::class, 'deleteForce'])->name('user.delete');
     });
 
-    Route::post('admin/logout', [AdminLoginController::class, 'adminLogout'])->name('admin.logout');
 
 });
+Route::middleware(['auth:admin-api'])->group(function(){
+    Route::group(['prefix' =>'user'], function($router){
+        Route::get('/', [UserController::class, 'index'])->name('user.index')->can('show', '\App\Models\Admin');
+        Route::put('/{user}', [UserController::class, 'update'])->name('user.restore')->can('update', '\App\Models\Admin');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy')->can('delete', '\App\Models\Admin');
+
+    });
+});
+// Route::middleware(['auth:admin-api', 'scope:update,show,delete'])->group(function(){
+//     Route::group(['prefix' =>'user'], function($router){
+//         Route::put('/{user}', [UserController::class, 'update'])->name('user.restore');
+//         Route::get('/', [UserController::class, 'index'])->name('user.index');
+//         Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+
+//     });
+// });

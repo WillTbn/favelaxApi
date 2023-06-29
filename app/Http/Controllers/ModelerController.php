@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObject\Admin\AdminDTO;
+use App\DataTransferObject\Admin\UpAdminDTO;
 use App\DataTransferObject\Modeler\ModelerDTO;
 use App\DataTransferObject\Modeler\UpModelerDTO;
+use App\Models\Admin;
 use App\Models\Modeler;
 use App\Services\ModelerServices;
 use Illuminate\Http\Request;
@@ -26,12 +29,12 @@ class ModelerController extends Controller
 
     public function create(Request $request)
     {
-
-        $dto = new ModelerDTO(...$request->only(['name', 'email', 'password', 'password_confirm']));
+        $request['role_id'] = 2;
+        $dto = new AdminDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'role_id']));
 
         $user = $this->modService->createModelador($dto);
 
-        return response()->json(['status'=> '200', 'data' => $user], 200);
+        return response()->json(['status'=> '200', 'message'=>'Modelador criado com sucesso!','data' => $user], 200);
     }
 
     public function show(string $id)
@@ -49,7 +52,7 @@ class ModelerController extends Controller
         if( $getUser ){
 
             $request['id'] = $user;
-            $dto = new UpModelerDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm', 'role_id']));
             $registro = $this->modService->updateAdmin($dto);
 
             if($registro){
@@ -72,14 +75,14 @@ class ModelerController extends Controller
     }
     public function trashed()
     {
-        $users = Modeler::onlyTrashed()->get();
+        $users = $this->modService->OnlyTrashedAll();
 
         return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );
     }
     public function restore(string $id)
     {
 
-        $getUser = Modeler::onlyTrashed()->where(['id' => $id])->first();
+        $getUser = $this->modService->OnlyTrashed($id);
         if($getUser){
             $getUser->restore();
             return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
@@ -91,7 +94,7 @@ class ModelerController extends Controller
 
     public function deleteForce(string $id)
     {
-        $getUser = Modeler::onlyTrashed()->where(['id' => $id])->first();
+        $getUser = $this->modService->OnlyTrashedAll($id);
         if($getUser)
         {
             $getUser->forceDelete();

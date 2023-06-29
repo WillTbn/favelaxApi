@@ -1,46 +1,64 @@
 <?php
 namespace App\Services;
 
-use App\DataTransferObject\Finance\FinanceDTO;
-use App\DataTransferObject\Finance\UpFinanceDTO;
-use App\Models\Financial;
+use App\DataTransferObject\Admin\AdminDTO;
+use App\DataTransferObject\Admin\UpAdminDTO;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 
 class FinancialServices
 {
     public function getOne(int $id)
     {
+        $financial =  Admin::whereHas('role', function ($query) {
+            $query->whereIn('name', ['Financial lvl one', 'Financial lvl two']);
+        })->where('id', $id)->first();
 
-        $financial =  Financial::find($id);
+        return $financial;
+    }
+    public function onlyTrashedAll()
+    {
+
+        $financial = Admin::onlyTrashed()->whereHas('role', function ($query) {
+            $query->whereIn('name', ['Financial lvl one', 'Financial lvl two']);
+        })->get();
+
+        return $financial;
+    }
+    public function onlyTrashed(int $id)
+    {
+
+        $financial = Admin::onlyTrashed()->whereHas('role', function ($query) {
+            $query->whereIn('name', ['Financial lvl one', 'Financial lvl two']);
+        })->where('id', $id)->first();
 
         return $financial;
     }
     public function getAll()
     {
-        $financials =  Financial::get();
+        $financials =  Admin::where('role_id', 3)->orWhere('role_id', 4)->get();
 
         return $financials;
     }
-    public function createfinance(FinanceDTO $fin)
+    public function createfinance(AdminDTO $fin)
     {
 
-        $financial = new Financial();
+        $financial = new Admin();
         $financial->name = $fin->name;
         $financial->email = $fin->email;
         $financial->password = Hash::make($fin->password);
-        $financial->level = $fin->level;
+        $financial->role_id = $fin->role_id;
         $financial->saveOrFail();
         return $financial;
     }
-    public function updateFinance(UpFinanceDTO $dto)
+    public function updateFinance(UpAdminDTO $dto)
     {
 
 
-        $financial = Financial::where('id', $dto->id)->first();
+        $financial = Admin::where('role_id', 3)->orWhere('role_id', 4)->where('id', $dto->id)->first();
         $financial->name = $dto->name;
         $financial->password = Hash::make($dto->password);
-        // qualquer outro valor passado irá se considerado nivel 1 para o financeiro
-        $financial->level = $dto->level;
+        $financial->role_id = $dto->role_id;
         $financial->saveOrFail();
 
         return $financial;

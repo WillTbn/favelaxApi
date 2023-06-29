@@ -66,27 +66,6 @@ return [
         'admin-api' => [
             'driver' => 'passport',
             'provider' => 'admins',
-        ],
-        //  FOR MODELER
-
-        'modeler' => [
-            'driver' => 'session',
-            'provider' => 'modelers',
-        ],
-
-        'modeler-api' => [
-            'driver' => 'passport',
-            'provider' => 'modelers',
-        ],
-        //  FOR FINANCIAL
-        'financial' => [
-            'driver' => 'session',
-            'provider' => 'financials',
-        ],
-
-        'financial-api' => [
-            'driver' => 'passport',
-            'provider' => 'financials',
         ]
     ],
 
@@ -116,14 +95,6 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
-        ],
-        'modelers' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Modeler::class,
-        ],
-        'financials' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Financial::class,
         ]
     ],
     /*

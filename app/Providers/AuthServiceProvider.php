@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
+use App\Policies\AdminPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -14,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        User::class => UserPolicy::class,
+        Admin::class => AdminPolicy::class,
     ];
 
     /**
@@ -29,8 +33,6 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan([
             'user'=> 'User',
             'admin' => 'Admin',
-            'modeler' => 'Modeler',
-            'financial' => 'Financial'
         ]);
     }
 }

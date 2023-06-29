@@ -12,17 +12,15 @@ class AdminServices
 
     public function getOne(int $id)
     {
-        $user =  Admin::find($id);
+        $user =  Admin::with(['role'])->where('role_id', 1)->find($id);
 
         return $user;
     }
     public function getAdmins()
     {
-        $users =  Admin::where('id', '!=',auth('api')->user()->id)->get();
-
+        $users =  Admin::with(['role.abilities'])->where('id', '!=',auth('api')->user()->id)->get();
         return $users;
     }
-
     public function createAdmin(AdminDTO $admin)
     {
 
@@ -30,6 +28,7 @@ class AdminServices
         $user->name = $admin->name;
         $user->email = $admin->email;
         $user->password = Hash::make($admin->password);
+        $user->role_id = $admin->role_id;
         $user->saveOrFail();
         return $user;
     }
@@ -38,6 +37,7 @@ class AdminServices
         $user = Admin::find($dto->id);
         $user->name = $dto->name;
         $user->password = Hash::make($dto->password);
+        $user->role_id = $dto->role_id;
         $user->saveOrFail();
 
         return $user;

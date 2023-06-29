@@ -18,23 +18,23 @@ class AdminController extends Controller
         AdminServices $serviceAdmin
     )
     {
-        $this->middleware('auth:api');
-        $this->loggedUser = auth()->user('api');
+        $this->middleware('auth:admin-api');
+        $this->loggedUser = auth()->user('admin-api');
         $this->adminSer = $serviceAdmin;
     }
 
     public function index()
     {
-        $list = $this->adminSer->getAdmins();
+        $list = $this->adminSer->getAdmins(1);
 
         return response()->json(['status'=> '200', 'data' => $list], 200);
     }
 
     public function create(Request $request)
     {
-
+        $request['role_id'] = 1;
         $dto = new AdminDTO(...$request->only([
-            'name', 'email', 'password', 'password_confirm'
+            'name', 'email', 'password', 'password_confirm', 'role_id'
         ]));
 
         $user = $this->adminSer->createAdmin($dto);
@@ -50,7 +50,7 @@ class AdminController extends Controller
         {
             return response()->json(['status'=> '200', 'data' => $getUser], 200);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de adm!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de Administradores!'], 400);
     }
 
 
@@ -59,7 +59,7 @@ class AdminController extends Controller
         $getUser = $this->adminSer->getOne($user);
         if($getUser){
             $request['id'] = $user;
-            $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm']));
+            $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm', 'role_id']));
             $registro = $this->adminSer->updateAdmin($dto);
 
             if($registro){
@@ -67,21 +67,21 @@ class AdminController extends Controller
             }
             return response()->json(['status'=> '500', 'message' => 'OPS!! erro inexperado, tente novamente mais tarde!'], 500);
         }
-        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de adm!'], 400);
+        return response()->json(['status'=> '400', 'message' => 'Usuário não existente na lista de Administradores!'], 400);
     }
     public function trashed()
     {
-        $users = Admin::onlyTrashed()->get();
+        $users = Admin::onlyTrashed()->where('role_id', 1)->get();
 
         return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );
     }
     public function restore(string $id)
     {
 
-        $getUser = Admin::onlyTrashed()->where(['id' => $id])->first();
+        $getUser = Admin::onlyTrashed()->where('role_id', 1)->where(['id' => $id])->first();
         if($getUser){
             $getUser->restore();
-            return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
+            return response()->json(['status'=> '200', 'message'=>'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
         }
 
         return response()->json(['status'=>'200','message'=>'Usuário não se encontra na lista de exclusão!'], 400);
@@ -89,6 +89,7 @@ class AdminController extends Controller
     public function destroy(string $user)
     {
         $currentUser =  $user = $this->adminSer->getOne($user);
+
         if($currentUser){
 
             $getUser = $currentUser->delete($currentUser->id);

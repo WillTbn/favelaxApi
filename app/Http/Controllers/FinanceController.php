@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObject\Admin\AdminDTO;
+use App\DataTransferObject\Admin\UpAdminDTO;
 use App\DataTransferObject\Finance\FinanceDTO;
 use App\DataTransferObject\Finance\UpFinanceDTO;
 use App\DataTransferObject\User\UpUserDTO;
+use App\Models\Admin;
 use App\Models\Financial;
 use App\Services\FinancialServices;
 use Illuminate\Http\Request;
@@ -28,7 +31,7 @@ class FinanceController extends Controller
 
     public function create(Request $request)
     {
-        $dto = new FinanceDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'level']));
+        $dto = new AdminDTO(...$request->only(['name', 'email', 'password', 'password_confirm', 'role_id']));
 
         $user = $this->serviceFin->createfinance($dto);
 
@@ -52,7 +55,7 @@ class FinanceController extends Controller
         if($currentUser){
 
             $request['id'] = $user;
-            $dto = new UpFinanceDTO(...$request->only(['id','name','password', 'password_confirm', 'level']));
+            $dto = new UpAdminDTO(...$request->only(['id','name','password', 'password_confirm', 'role_id']));
             $registro = $this->serviceFin->updateFinance($dto);
 
             if($registro){
@@ -76,14 +79,15 @@ class FinanceController extends Controller
     }
     public function trashed()
     {
-        $users = Financial::onlyTrashed()->get();
+        // $users = Admin::onlyTrashed()->get();
+        $users = $this->serviceFin->onlyTrashedAll();
 
         return response()->json(['status'=> '200','message' =>  'Lista de usuários para exclusão!', 'data'=>  $users], 200 );
     }
     public function restore(string $id)
     {
 
-        $getUser = Financial::onlyTrashed()->where(['id' => $id])->first();
+        $getUser = $this->serviceFin->onlyTrashed($id);
         if($getUser){
             $getUser->restore();
             return response()->json(['status'=> '200', 'Usuário foi retirado da lista de exclusão!','data'=> $getUser], 200 );
@@ -94,12 +98,12 @@ class FinanceController extends Controller
 
     public function deleteForce(string $id)
     {
-        $getUser = Financial::onlyTrashed()->where(['id' => $id])->first();
+        $getUser = $this->serviceFin->onlyTrashed($id);
         if($getUser)
         {
             $getUser->forceDelete();
 
-            return response()->json(['status'=> '200','message'=> 'Usuario excluido do sistema!'], 200);
+            return response()->json(['status'=> '200','message'=> 'Usuário excluido do sistema!'], 200);
         }
         return response()->json(['status'=>'400', 'message' =>'Usuário não se encontra na lista de exclusão!'], 400);
     }

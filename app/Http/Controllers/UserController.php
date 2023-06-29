@@ -21,13 +21,7 @@ class UserController extends Controller
     }
     public function index()
     {
-        $type = auth('api')->user()->role;
-        // return dd($userCurrent[0]);
-        if($type == "modelador"){
-            $users = $this->userServ->getNotAdmin();
-        }else{
-            $users = User::all();
-        }
+        $users = User::all();
 
         return response()->json(['status' => '200', 'data' =>  $users], 200);
     }
@@ -54,7 +48,6 @@ class UserController extends Controller
     {
         $getUser = $this->userServ->getOne($user);
 
-        // return $getUser;
         if($getUser){
             $request['id'] = $getUser->id;
             $dto = new UpUserDTO(...$request->only(['id','name','password', 'password_confirm']));
@@ -86,15 +79,17 @@ class UserController extends Controller
 
         return response()->json(['error', 'Usuário não se encontra na lista de exclusão!'], 400);
     }
-    public function destroy(User $user)
+    public function destroy(string $user)
     {
-        if($user)
+        $currentUser = $this->userServ->getOne($user);
+        if($currentUser)
         {
-            // return $user;
-            $getUser = $user->delete($user->id);
+            // return $user;getUser
+            $getUser = $currentUser->delete($currentUser->id);
 
             return response()->json(['status'=> '200','message' =>  'Usuário adiocinado na lista para ser excluido!', 'data'=>  $getUser], 200 );
         }
+        return response()->json(['status'=>'400', 'message' =>'Usuário não se encontra na lista para exclusão!'], 400);
     }
 
 

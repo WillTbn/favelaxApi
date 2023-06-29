@@ -6,7 +6,9 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ModelerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-
+Route::get('/ping', function(){
+    return ['pong' =>true];
+});
 /*
 |--------------------------------------------------------------------------
 | API Routes
