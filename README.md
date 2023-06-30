@@ -54,3 +54,7 @@ Pronto basta acessa como administardo com o email e senha do .env que você colo
 Usei como ponta pé inicial o artigo linkado aqui.
 
 Segui a lógica para criação de uma Tabela de administradores separado dos usuários padrões, onde nos administradores temos o campo role_id, onde está associado a o role que traz as devidas habilidades da role, associação N:N, a ideia é dar liberdade para criação personalidade de ambos, sendo somente obrigatório qualquer usuário administrador ter um role_id.
+
+## Melhorias
+
+adicionar tabela para indexar múltiplos relacionamentos entre tabela roles e Ability 
